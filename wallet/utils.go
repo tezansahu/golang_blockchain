@@ -1,17 +1,19 @@
 package wallet
 
-import(
+import (
 	"log"
 
 	"github.com/mr-tron/base58"
 )
 
+// Wrapper for base58 encoding
 func Base58Encode(input []byte) []byte {
 	encode := base58.Encode(input)
 
 	return []byte(encode)
 }
 
+// Wrapper for base58 decoding
 func Base58Decode(input []byte) []byte {
 	decode, err := base58.Decode(string(input[:]))
 	if err != nil {

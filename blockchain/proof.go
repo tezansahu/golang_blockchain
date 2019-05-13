@@ -10,13 +10,16 @@ import (
 	"math/big"
 )
 
+// Statically set difficulty for PoW mining
 const Difficulty = 18
 
+// Proof of Work Structure
 type ProofOfWork struct {
 	Block  *Block
 	Target *big.Int
 }
 
+// Initialize a proof for a block using the target difficulty of the hash to be found
 func NewProof(b *Block) *ProofOfWork {
 	target := big.NewInt(1)
 	target.Lsh(target, uint(256-Difficulty))
@@ -25,6 +28,8 @@ func NewProof(b *Block) *ProofOfWork {
 	return pow
 }
 
+// Initialize the data of the block in a PoW proof. Convert all individual
+// parameters to bytes and concatenate them.
 func (pow *ProofOfWork) InitData(nonce int) []byte {
 	data := bytes.Join(
 		[][]byte{
@@ -38,6 +43,7 @@ func (pow *ProofOfWork) InitData(nonce int) []byte {
 	return data
 }
 
+// Convert an integer to bytes (using Big Endian form)
 func ToHex(num int64) []byte {
 	buff := new(bytes.Buffer)
 	err := binary.Write(buff, binary.BigEndian, num)
@@ -48,6 +54,7 @@ func ToHex(num int64) []byte {
 	return buff.Bytes()
 }
 
+// Run the PoW algorithm to find the appropriate nonce value for the block
 func (pow *ProofOfWork) Run() (int, []byte) {
 	var intHash big.Int
 	var hash [32]byte
@@ -72,6 +79,7 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 	return nonce, hash[:]
 }
 
+// Check correctness of the hash generated for a block using PoW
 func (pow *ProofOfWork) Validate() bool {
 	var intHash big.Int
 	data := pow.InitData(pow.Block.Nonce)
